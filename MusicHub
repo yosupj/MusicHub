@@ -1,0 +1,370 @@
+//******************************************************************************
+// Copyright (C) 2016-2018 University of Oklahoma Board of Trustees.
+//******************************************************************************
+// Last modified: Tue Feb  9 20:33:16 2016 by Chris Weaver
+//******************************************************************************
+// Major Modification History:
+//
+// 20160209 [weaver]:	Original file (for CS 4053/5053 homeworks).
+// 20180123 [weaver]:	Modified for use in CS 3053 team projects.
+//
+//******************************************************************************
+// Notes:
+//
+//******************************************************************************
+
+//package edu.ou.cs.hci.example;
+
+//import java.lang.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
+import javax.jws.soap.SOAPBinding.Style;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
+
+//******************************************************************************
+
+/**
+ * The <CODE>Base</CODE> class.<P>
+ *
+ * @author  Chris Weaver
+ * @version %I%, %G%
+ */
+public final class MusicHub
+{
+	//**********************************************************************
+	// Public Class Members
+	//**********************************************************************
+
+	private static final Font	FONT =
+		new Font(Font.SANS_SERIF, Font.BOLD, 30);
+	private static final Color	FILL_COLOR = Color.WHITE;
+	private static final Color	EDGE_COLOR = Color.BLACK;
+
+	//**********************************************************************
+	// Private Members
+	//**********************************************************************
+
+	// State (internal) variables
+	private static String		message;
+
+	//**********************************************************************
+	// Main
+	//**********************************************************************
+
+	public static void main(String[] args) throws IOException
+	{
+		
+		//parser p = new parser("Eighties.csv");
+		//Library songs = p.getLibrary();
+		
+		JFrame			frame = new JFrame("MusicHub");
+		
+		//Song List Panel
+		JPanel			songList = new JPanel(new GridLayout(0,1));
+		songList.setVisible(true);
+		songList.setBackground(Color.BLACK);
+		songList.setPreferredSize(new Dimension(400, 300));
+		
+		//Search Pane
+		JTextPane		searchPane = new JTextPane();
+		
+		searchPane.setPreferredSize(new Dimension(50, 50));
+		searchPane.setBackground(Color.BLACK);
+		searchPane.setForeground(Color.GRAY);
+		searchPane.setText("Search...");
+		
+		//Mouse listener. Clears search pane when clicked.
+		searchPane.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int modifiers = e.getModifiers();
+				if((modifiers & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK) {
+					searchPane.setText(null);
+				}				
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
+		
+		//TODO: Refine later. Panel will display album artwork and song info.
+		JPanel			songDisplay = new JPanel(new GridLayout(0,1));
+		songDisplay.setVisible(true);
+		songDisplay.setBackground(Color.WHITE);
+		songDisplay.setPreferredSize(new Dimension(300, 200));
+		songDisplay.setBorder(BorderFactory.createLineBorder(Color.black));
+		
+		//Test Album Artwork
+		JLabel 			albumArt = new JLabel();
+		albumArt.setIcon(new ImageIcon("/Users/ryanhernandez/eclipse-workspace/MusicHub/prince-1999.jpg"));
+		albumArt.setHorizontalAlignment(SwingConstants.CENTER);
+		albumArt.setPreferredSize(new Dimension(50, 50));
+		songDisplay.add(albumArt);
+		
+		//TODO: Temporary placeholder, replace with something that works better
+		JTextPane		songInfo = new JTextPane();
+		songInfo.setPreferredSize(new Dimension(250, 150));
+		songInfo.setText("Test text...");
+		StyledDocument doc = songInfo.getStyledDocument();
+		SimpleAttributeSet center = new SimpleAttributeSet();
+		StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+		doc.setParagraphAttributes(0, doc.getLength(), center, false);
+		
+		songDisplay.add(songInfo); //Adds song info pane to the Panel
+		
+		
+		
+		//Add things to Song List Panel
+		songList.add(searchPane);
+		
+		//Will Iterate over ArrayList of Songs and add their titles to buttons
+		//Will be used to select songs in future
+		for(int i = 0; i < 20; ++i) { 
+			JButton songButton = new JButton("Test Song Button..");
+			songButton.setForeground(Color.WHITE);
+			songButton.setBackground(Color.BLACK);
+			songButton.setOpaque(true);
+			songButton.setBorderPainted(false);
+			songButton.setHorizontalAlignment(SwingConstants.LEFT);
+			
+			//Will display song information in songDisplay Panel when fully implemented
+			//Right now just turns buttons gray when pressed
+			songButton.addMouseListener(new MouseListener() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					// TODO implement
+				}
+				
+				@Override
+				public void mousePressed(MouseEvent e) {
+					int modifiers = e.getModifiers();
+					if((modifiers & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK) {
+						songButton.setBackground(Color.GRAY);
+					}
+				}
+
+				@Override
+				public void mouseReleased(MouseEvent e) {
+					int modifiers = e.getModifiers();
+					if((modifiers & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK) {
+						songButton.setBackground(Color.BLACK);
+					}
+				}
+
+				@Override
+				public void mouseEntered(MouseEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void mouseExited(MouseEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
+			songList.add(songButton); //Adds the button to the Panel
+		}
+		
+		//Creates Panel to hold App Name
+		JPanel titlePanel = new JPanel();
+		titlePanel.setPreferredSize(new Dimension(1200, 40));
+		titlePanel.setBackground(Color.DARK_GRAY);
+		titlePanel.setLayout(new GridLayout(1,0));
+		
+		//Creates Text Pane with App Name
+		JTextPane titlePane = new JTextPane();
+		titlePane.setBackground(Color.DARK_GRAY);
+		titlePane.setForeground(Color.WHITE);
+		titlePane.setFont(FONT);
+		titlePane.setText("M u s i c H u b");
+		titlePane.setEditable(false);
+		
+		//Formats Pane so text is aligned in center
+		doc = titlePane.getStyledDocument();
+		center = new SimpleAttributeSet();
+		StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+		doc.setParagraphAttributes(0, doc.getLength(), center, false);
+		
+		//Adds Pane to Panel
+		titlePanel.add(titlePane);
+		
+		//Filler Panel..
+		JPanel fillerPanel1 = new JPanel();
+		fillerPanel1.setPreferredSize(new Dimension(100, 700));
+		fillerPanel1.setBackground(Color.DARK_GRAY);
+		
+		//Filler Panel.. Need to reformat layout, possibly with gridbaglayout
+		JPanel fillerPanel2 = new JPanel();
+		fillerPanel2.setPreferredSize(new Dimension(1200, 30));
+		fillerPanel2.setBackground(Color.DARK_GRAY);
+			
+		
+		frame.setBackground(Color.DARK_GRAY);
+		frame.setSize(1200, 700);
+		frame.setLocationRelativeTo(null);
+		frame.getContentPane().setLayout(new BorderLayout());
+		frame.getContentPane().add(titlePanel, BorderLayout.NORTH);
+		frame.getContentPane().add(fillerPanel1, BorderLayout.EAST);
+		frame.getContentPane().add(fillerPanel2, BorderLayout.SOUTH);
+		frame.getContentPane().add(songList, BorderLayout.WEST);
+		frame.getContentPane().add(songDisplay, BorderLayout.CENTER);
+		//frame.getContentPane().add(songInfo, BorderLayout.CENTER);
+		frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		
+
+		frame.addWindowListener(new WindowAdapter() {
+				public void windowClosing(WindowEvent e) {
+					System.exit(0);
+				}
+			});
+		
+		/* TEST FOR FILE WRITING
+		Song s1 = new Song("spotify:track:48O0GrGJWml3DzHhC5sJ7a", "Karma Chameleon", "Culture Club" , 
+				"At Worst...The Best Of Boy George And Culture Club", "80’s", 241600);
+		Song s2 = new Song("spotify:track:7cRWPAHuHQ36agbu6Empc8", "Tenderness", "General Public", 
+				"All The Rage", "80’s", 218160);
+		ArrayList<Song> testList = new ArrayList<Song>();
+		testList.add(s1);
+		testList.add(s2);
+		*/
+
+	}
+
+	//**********************************************************************
+	// Private Inner Classes
+	//**********************************************************************
+
+	private static final class HelloPanel extends JPanel
+	{
+		private final String	message;
+
+		public HelloPanel(String message)
+		{
+			this.message = ((message != null) ? message : "");
+		}
+
+		public HelloPanel()
+		{
+			this("");
+		}
+
+		public void	paintComponent(Graphics g)
+		{
+			FontMetrics	fm = g.getFontMetrics(FONT);
+			int			fw = fm.stringWidth(message);
+			int			fh = fm.getMaxAscent() + fm.getMaxDescent();
+			int			x = (getWidth() - fw) / 2;
+			int			y = (getHeight() - fh) / 2;
+			Rectangle		r = new Rectangle(x, y, fw + 4, fh + 1);
+
+			if (FILL_COLOR != null)
+			{
+				g.setColor(FILL_COLOR);
+				g.fillRect(r.x, r.y, r.width - 1, r.height - 1);
+			}
+
+			if (EDGE_COLOR != null)
+			{
+				g.setColor(EDGE_COLOR);
+				g.drawRect(r.x, r.y, r.width - 1, r.height - 1);
+
+				g.setFont(FONT);
+				g.drawString(message, r.x + 2, r.y + fm.getMaxAscent());
+			}
+		}
+	}
+	private static final class SongList extends JPanel {
+		
+		public SongList(ArrayList<Song> songs) {
+			
+			GridBagLayout layoutManager = new GridBagLayout();
+			this.setLayout(layoutManager);
+			
+			GridBagConstraints c = new GridBagConstraints();
+			
+			
+			//Search Pane
+			JTextPane		searchPane = new JTextPane();
+			
+			searchPane.setPreferredSize(new Dimension(50, 50));
+			searchPane.setBackground(Color.BLACK);
+			searchPane.setForeground(Color.GRAY);
+			searchPane.setText("Search...");
+			
+			//Mouse listener. Clears search pane when clicked.
+			searchPane.addMouseListener(new MouseListener() {
+
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					int modifiers = e.getModifiers();
+					if((modifiers & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK) {
+						searchPane.setText(null);
+					}				
+				}
+
+				@Override
+				public void mousePressed(MouseEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void mouseReleased(MouseEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void mouseEntered(MouseEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void mouseExited(MouseEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+			});
+		}
+	}
+}
+
+//******************************************************************************
